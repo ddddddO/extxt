@@ -5,7 +5,7 @@ Extracts text from the specified image file.
 # Install
 
 ```
-go get github.com/ddddddO/extxt/cmd
+go get github.com/ddddddO/extxt/cmd/extxt
 ```
 
 # Usage

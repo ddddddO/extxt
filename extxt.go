@@ -59,24 +59,24 @@ func (c *client) detectText(ctx context.Context, w io.Writer, targetFile string)
 
 	if len(annotations) == 0 {
 		fmt.Fprintln(w, "No text found.")
-	} else {
-		fmt.Fprint(w, `{"text":`)
-		for i, annotation := range annotations {
-			s := annotation.Description
-			if i == 0 {
-				s = strings.ReplaceAll(s, "\n", "")
-				fmt.Fprintf(w, `%q,"words":[`, s)
-				continue
-			}
-			if i == len(annotations)-1 {
-				fmt.Fprintf(w, "%q]", s)
-				continue
-			}
-
-			fmt.Fprintf(w, "%q,", s)
-		}
-		fmt.Fprintln(w, "}")
+		return nil
 	}
+
+	for i, annotation := range annotations {
+		s := annotation.Description
+		if i == 0 {
+			s = strings.ReplaceAll(s, "\n", "")
+			fmt.Fprintf(w, `{"text":%q,"words":[`, s)
+			continue
+		}
+		if i == len(annotations)-1 {
+			fmt.Fprintf(w, "%q]", s)
+			continue
+		}
+
+		fmt.Fprintf(w, "%q,", s)
+	}
+	fmt.Fprintln(w, "}")
 
 	return nil
 }

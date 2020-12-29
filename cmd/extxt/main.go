@@ -7,11 +7,10 @@ import (
 )
 
 func main() {
-	serviceAccountFile := "/mnt/c/Users/lbfde/Downloads/tag-mng-b8e1b87744fc.json"
-	in := "../../testdata/image.JPG"
+	in := "./testdata/image.JPG"
 	out := os.Stdout
 
-	if err := extxt.Run(out, in, serviceAccountFile); err != nil {
+	if err := extxt.Run(out, in); err != nil {
 		panic(err)
 	}
 }

@@ -7,16 +7,14 @@ import (
 	"os"
 
 	vision "cloud.google.com/go/vision/apiv1"
-	"google.golang.org/api/option"
 )
 
-// Client is ...
 type client struct {
 	*vision.ImageAnnotatorClient
 }
 
-func newClient(ctx context.Context, opt option.ClientOption) (*client, error) {
-	c, err := vision.NewImageAnnotatorClient(ctx, opt)
+func newClient(ctx context.Context) (*client, error) {
+	c, err := vision.NewImageAnnotatorClient(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -27,10 +25,9 @@ func newClient(ctx context.Context, opt option.ClientOption) (*client, error) {
 }
 
 // Run is ...
-func Run(w io.Writer, targetFile, serviceAccountFile string) error {
+func Run(w io.Writer, targetFile string) error {
 	ctx := context.Background()
-	opt := option.WithCredentialsFile(serviceAccountFile)
-	cli, err := newClient(ctx, opt)
+	cli, err := newClient(ctx)
 	if err != nil {
 		return err
 	}

@@ -10,6 +10,11 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+var (
+	Version  = "xxxxx"
+	Revision = "zzzzz"
+)
+
 func main() {
 	app := &cli.App{
 		Flags: []cli.Flag{

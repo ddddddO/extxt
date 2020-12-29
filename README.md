@@ -13,4 +13,4 @@ go get github.com/ddddddO/extxt/cmd/extxt
 1. Install `extxt` command.
 1. Create a service account for cloud vison.
 1. `export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service_account_key_json`
-1. Please execute `extxt -x xxx -y yyy`.
+1. Please execute ` -i /path/to/src -o /path/to/dest`.

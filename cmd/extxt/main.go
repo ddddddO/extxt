@@ -31,11 +31,17 @@ func main() {
 			}
 
 			var output io.WriteCloser
-			if c.String("output") == "" {
+			dest := c.String("output")
+			if dest == "" {
 				output = os.Stdout
 			} else {
-				// file open
+				f, err := os.Create(dest)
+				if err != nil {
+					return err
+				}
+				output = f
 			}
+			defer output.Close()
 
 			if err := extxt.Run(output, input); err != nil {
 				return err

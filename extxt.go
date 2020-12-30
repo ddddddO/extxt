@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	vision "cloud.google.com/go/vision/apiv1"
+	pb "google.golang.org/genproto/googleapis/cloud/vision/v1"
 )
 
 type client struct {
@@ -62,21 +63,44 @@ func (c *client) detectText(ctx context.Context, w io.Writer, targetFile string)
 		return nil
 	}
 
+	jsonReader, err := genJSONReader(annotations)
+	if err != nil {
+		return err
+	}
+
+	io.Copy(w, jsonReader)
+
+	return nil
+}
+
+func genJSONReader(annotations []*pb.EntityAnnotation) (io.Reader, error) {
+	jsonWriter := &strings.Builder{}
 	for i, annotation := range annotations {
 		s := annotation.Description
 		if i == 0 {
 			s = strings.ReplaceAll(s, "\n", "")
-			fmt.Fprintf(w, `{"text":%q,"words":[`, s)
+			tmp := fmt.Sprintf(`{"text":%q,"words":[`, s)
+			if _, err := jsonWriter.WriteString(tmp); err != nil {
+				return nil, err
+			}
 			continue
 		}
 		if i == len(annotations)-1 {
-			fmt.Fprintf(w, "%q]", s)
+			tmp := fmt.Sprintf("%q]", s)
+			if _, err := jsonWriter.WriteString(tmp); err != nil {
+				return nil, err
+			}
 			continue
 		}
 
-		fmt.Fprintf(w, "%q,", s)
+		tmp := fmt.Sprintf("%q,", s)
+		if _, err := jsonWriter.WriteString(tmp); err != nil {
+			return nil, err
+		}
 	}
-	fmt.Fprintln(w, "}")
+	if _, err := jsonWriter.WriteString("}"); err != nil {
+		return nil, err
+	}
 
-	return nil
+	return strings.NewReader(jsonWriter.String()), nil
 }

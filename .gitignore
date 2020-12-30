@@ -1,1 +1,6 @@
 /testdata/output
+terraform.tfvars
+terraform.tfstate
+terraform.tfstate.backup
+deployment/terraform/.terraform
+secret.json

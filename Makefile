@@ -13,3 +13,8 @@ runsrv:
 # 	git tag -a v1.0.X -m 'msg' && \
 # 	git push origin v1.0.X
 #	git push
+
+## NOTE: extxtに変更があった場合は、make buildappでイメージを更新&GCRへpushする。で、cloud runをdestroy -> applyする
+buildapp:
+	docker build -t gcr.io/extxt-300211/extxt --no-cache=true -f deployment/dockerfile/Dockerfile . && \
+	docker push gcr.io/extxt-300211/extxt

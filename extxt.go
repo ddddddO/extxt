@@ -34,26 +34,7 @@ func Run(w io.Writer, targetFile string) error {
 		return err
 	}
 
-	if err := cli.detectText(ctx, w, targetFile); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// detectText gets text from the Vision API for an image at the given file path.
-func (c *client) detectText(ctx context.Context, w io.Writer, targetFile string) error {
-	f, err := os.Open(targetFile)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
-	image, err := vision.NewImageFromReader(f)
-	if err != nil {
-		return err
-	}
-	annotations, err := c.DetectTexts(ctx, image, nil, 10)
+	annotations, err := cli.detectText(ctx, targetFile)
 	if err != nil {
 		return err
 	}
@@ -63,14 +44,33 @@ func (c *client) detectText(ctx context.Context, w io.Writer, targetFile string)
 		return nil
 	}
 
-	jsonReader, err := genJSONReader(annotations)
+	r, err := genJSONReader(annotations)
 	if err != nil {
 		return err
 	}
 
-	io.Copy(w, jsonReader)
-
+	io.Copy(w, r)
 	return nil
+}
+
+// detectText gets text from the Vision API for an image at the given file path.
+func (c *client) detectText(ctx context.Context, targetFile string) ([]*pb.EntityAnnotation, error) {
+	f, err := os.Open(targetFile)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	image, err := vision.NewImageFromReader(f)
+	if err != nil {
+		return nil, err
+	}
+	annotations, err := c.DetectTexts(ctx, image, nil, 10)
+	if err != nil {
+		return nil, err
+	}
+
+	return annotations, nil
 }
 
 func genJSONReader(annotations []*pb.EntityAnnotation) (io.Reader, error) {

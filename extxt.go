@@ -55,22 +55,41 @@ func Run(w io.Writer, targetFile string) error {
 
 // detectText gets text from the Vision API for an image at the given file path.
 func (c *client) detectText(ctx context.Context, targetFile string) ([]*pb.EntityAnnotation, error) {
-	f, err := os.Open(targetFile)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
+	var image *pb.Image
 
-	image, err := vision.NewImageFromReader(f)
-	if err != nil {
-		return nil, err
+	if isRemoteFile(targetFile) {
+		image = vision.NewImageFromURI(targetFile)
+	} else {
+		f, err := os.Open(targetFile)
+		if err != nil {
+			return nil, err
+		}
+		defer f.Close()
+
+		image, err = vision.NewImageFromReader(f)
+		if err != nil {
+			return nil, err
+		}
 	}
+
 	annotations, err := c.DetectTexts(ctx, image, nil, 10)
 	if err != nil {
 		return nil, err
 	}
 
 	return annotations, nil
+}
+
+func isRemoteFile(targetPath string) bool {
+	schemas := []string{"http://", "https://", "gs://"}
+
+	for _, s := range schemas {
+		if strings.HasPrefix(targetPath, s) {
+			return true
+		}
+	}
+
+	return false
 }
 
 func genJSONReader(annotations []*pb.EntityAnnotation) (io.Reader, error) {

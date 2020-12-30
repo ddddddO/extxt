@@ -54,6 +54,20 @@ func main() {
 
 			return nil
 		},
+		Commands: []*cli.Command{
+			{
+				Name:    "server",
+				Aliases: []string{"s"},
+				Usage:   "start extxt server",
+				Action: func(c *cli.Context) error {
+					if err := extxt.RunServer(); err != nil {
+						return err
+					}
+
+					return nil
+				},
+			},
+		},
 	}
 
 	err := app.Run(os.Args)

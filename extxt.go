@@ -27,6 +27,33 @@ func newClient(ctx context.Context) (*client, error) {
 	}, nil
 }
 
+// RunByServer is ...
+func RunByServer(w io.Writer, f io.Reader) error {
+	ctx := context.Background()
+	cli, err := newClient(ctx)
+	if err != nil {
+		return err
+	}
+
+	image, err := vision.NewImageFromReader(f)
+	if err != nil {
+		return err
+	}
+
+	annotations, err := cli.DetectTexts(ctx, image, nil, 10)
+	if err != nil {
+		return err
+	}
+
+	r, err := genJSONReader(annotations)
+	if err != nil {
+		return err
+	}
+
+	io.Copy(w, r)
+	return nil
+}
+
 // Run is ...
 func Run(w io.Writer, targetPath string) error {
 	ctx := context.Background()

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 )
 
 // RunServer is ...
@@ -34,6 +35,12 @@ const indexHTML = `
 `
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
+	if !basicAuthenticated(r) {
+		w.Header().Add("WWW-Authenticate", `Basic realm="secret xxxx"`)
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
 	if r.Method == http.MethodGet {
 		fmt.Fprint(w, indexHTML)
 		return
@@ -56,4 +63,21 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+}
+
+var (
+	validName     = os.Getenv("BASIC_AUTH_NAME")
+	validPassword = os.Getenv("BASIC_AUTH_PASSWORD")
+)
+
+func basicAuthenticated(r *http.Request) bool {
+	username, password, ok := r.BasicAuth()
+	if !ok {
+		return false
+	}
+
+	if username == validName && password == validPassword {
+		return true
+	}
+	return false
 }

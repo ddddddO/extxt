@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	vision "cloud.google.com/go/vision/apiv1"
+	"github.com/pkg/errors"
 	pb "google.golang.org/genproto/googleapis/cloud/vision/v1"
 )
 
@@ -37,11 +38,6 @@ func Run(w io.Writer, targetPath string) error {
 	annotations, err := cli.detectText(ctx, targetPath)
 	if err != nil {
 		return err
-	}
-
-	if len(annotations) == 0 {
-		fmt.Fprintln(w, "No text found.")
-		return nil
 	}
 
 	r, err := genJSONReader(annotations)
@@ -93,6 +89,10 @@ func isRemoteFile(targetPath string) bool {
 }
 
 func genJSONReader(annotations []*pb.EntityAnnotation) (io.Reader, error) {
+	if len(annotations) == 0 {
+		return nil, errors.New("No text found")
+	}
+
 	jsonWriter := &strings.Builder{}
 	for i, annotation := range annotations {
 		s := annotation.Description

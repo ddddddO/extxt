@@ -27,14 +27,14 @@ func newClient(ctx context.Context) (*client, error) {
 }
 
 // Run is ...
-func Run(w io.Writer, targetFile string) error {
+func Run(w io.Writer, targetPath string) error {
 	ctx := context.Background()
 	cli, err := newClient(ctx)
 	if err != nil {
 		return err
 	}
 
-	annotations, err := cli.detectText(ctx, targetFile)
+	annotations, err := cli.detectText(ctx, targetPath)
 	if err != nil {
 		return err
 	}
@@ -54,13 +54,13 @@ func Run(w io.Writer, targetFile string) error {
 }
 
 // detectText gets text from the Vision API for an image at the given file path.
-func (c *client) detectText(ctx context.Context, targetFile string) ([]*pb.EntityAnnotation, error) {
+func (c *client) detectText(ctx context.Context, targetPath string) ([]*pb.EntityAnnotation, error) {
 	var image *pb.Image
 
-	if isRemoteFile(targetFile) {
-		image = vision.NewImageFromURI(targetFile)
+	if isRemoteFile(targetPath) {
+		image = vision.NewImageFromURI(targetPath)
 	} else {
-		f, err := os.Open(targetFile)
+		f, err := os.Open(targetPath)
 		if err != nil {
 			return nil, err
 		}

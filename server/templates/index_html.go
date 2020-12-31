@@ -18,7 +18,7 @@ const IndexHTML = `
 <body>
     <div id="main">
         <form action="/" method="post" enctype="multipart/form-data">
-            <input type="file" name="src_file" required>
+            <input type="file" name="src_file" accept="image/*" required>
             <button type="submit">text!</button>
         </form>
     </div>

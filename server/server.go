@@ -1,10 +1,12 @@
-package extxt
+package server
 
 import (
-	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/ddddddO/extxt"
 )
 
 // RunServer is ...
@@ -19,30 +21,7 @@ func RunServer() error {
 	return nil
 }
 
-const indexHTML = `
-<!DOCTYPE html>
-<html>
-<head>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <style type="text/css">
-        #main {
-            margin: 33vh auto 0;
-            transform: translateY(-50%);
-            text-align: center;
-        }
-    </style>
-    <title>Extxt</title>
-</head>
-<body>
-    <div id="main">
-        <form action="/" method="post" enctype="multipart/form-data">
-            <input type="file" name="src_file" required>
-            <button type="submit">text!</button>
-        </form>
-    </div>
-</body>
-</html>
-`
+const src = "src_file"
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	if !basicAuthenticated(r) {
@@ -52,23 +31,26 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == http.MethodGet {
-		fmt.Fprint(w, indexHTML)
+		t := template.Must(template.ParseFiles("server/templates/index.html"))
+		if err := t.Execute(w, src); err != nil {
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
 		return
 	}
 
 	if r.Method == http.MethodPost {
-		f, header, err := r.FormFile("src_file")
+		f, header, err := r.FormFile(src)
 		if err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 		_ = header
 
-		if err := RunByServer(w, f); err != nil {
+		if err := extxt.RunByServer(w, f); err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
-
 		return
 	}
 

@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/ddddddO/extxt"
+	exsrv "github.com/ddddddO/extxt/server"
 	"github.com/pkg/errors"
 	"github.com/urfave/cli/v2"
 )
@@ -60,7 +61,7 @@ func main() {
 				Aliases: []string{"s"},
 				Usage:   "start extxt server",
 				Action: func(c *cli.Context) error {
-					if err := extxt.RunServer(); err != nil {
+					if err := exsrv.RunServer(); err != nil {
 						return err
 					}
 

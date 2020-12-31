@@ -1,6 +1,8 @@
 package server
 
 import (
+	"bytes"
+	"encoding/json"
 	"html/template"
 	"log"
 	"net/http"
@@ -47,10 +49,28 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		_ = header
 
-		if err := extxt.RunByServer(w, f); err != nil {
+		buf := &bytes.Buffer{}
+		if err := extxt.RunByServer(buf, f); err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
+
+		tmp := &struct {
+			Text  string   `json:"Text"`
+			Words []string `json:"Words"`
+		}{}
+
+		if err := json.Unmarshal(buf.Bytes(), tmp); err != nil {
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+
+		t := template.Must(template.ParseFiles("server/templates/extxt.html"))
+		if err := t.Execute(w, tmp); err != nil {
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+
 		return
 	}
 

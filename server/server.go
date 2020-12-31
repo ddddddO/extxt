@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"github.com/ddddddO/extxt"
+	tmpl "github.com/ddddddO/extxt/server/templates"
 )
 
 // RunServer is ...
@@ -33,7 +34,12 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == http.MethodGet {
-		t := template.Must(template.ParseFiles("server/templates/index.html"))
+		t, err := template.New("index").Parse(tmpl.IndexHTML)
+		if err != nil {
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+
 		if err := t.Execute(w, src); err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
@@ -65,7 +71,12 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		t := template.Must(template.ParseFiles("server/templates/extxt.html"))
+		t, err := template.New("extxt").Parse(tmpl.ExtxtHTML)
+		if err != nil {
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+
 		if err := t.Execute(w, tmp); err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return

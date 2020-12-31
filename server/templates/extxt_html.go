@@ -1,3 +1,7 @@
+package templates
+
+// ExtxtHTML is ...
+const ExtxtHTML = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,3 +38,4 @@
     </div>
 </body>
 </html>
+`

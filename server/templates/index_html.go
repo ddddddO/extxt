@@ -1,3 +1,7 @@
+package templates
+
+// IndexHTML is ...
+const IndexHTML = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,3 +24,4 @@
     </div>
 </body>
 </html>
+`

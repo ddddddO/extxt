@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/ddddddO/extxt"
 	tmpl "github.com/ddddddO/extxt/server/templates"
@@ -89,8 +90,8 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 var (
-	validName     = os.Getenv("BASIC_AUTH_NAME")
-	validPassword = os.Getenv("BASIC_AUTH_PASSWORD")
+	validNames     = strings.Split(os.Getenv("BASIC_AUTH_NAMES"), ",")
+	validPasswords = strings.Split(os.Getenv("BASIC_AUTH_PASSWORDS"), ",")
 )
 
 func basicAuthenticated(r *http.Request) bool {
@@ -99,8 +100,13 @@ func basicAuthenticated(r *http.Request) bool {
 		return false
 	}
 
-	if username == validName && password == validPassword {
-		return true
+	for i, validName := range validNames {
+		if username != validName {
+			continue
+		}
+		if password == validPasswords[i] {
+			return true
+		}
 	}
 	return false
 }

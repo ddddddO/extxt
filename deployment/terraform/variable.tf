@@ -1,2 +1,2 @@
-variable BASIC_AUTH_NAME {}
-variable BASIC_AUTH_PASSWORD {}
+variable BASIC_AUTH_NAMES {}
+variable BASIC_AUTH_PASSWORDS {}

@@ -25,12 +25,12 @@ resource "google_cloud_run_service" "extxt" {
       containers {
         image = "gcr.io/extxt-300211/extxt"
         env {
-          name  = "BASIC_AUTH_NAME"
-          value = "${var.BASIC_AUTH_NAME}"
+          name  = "BASIC_AUTH_NAMES"
+          value = "${var.BASIC_AUTH_NAMES}"
         }
         env {
-          name  = "BASIC_AUTH_PASSWORD"
-          value = "${var.BASIC_AUTH_PASSWORD}"
+          name  = "BASIC_AUTH_PASSWORDS"
+          value = "${var.BASIC_AUTH_PASSWORDS}"
         }
       }
     }

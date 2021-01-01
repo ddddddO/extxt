@@ -4,8 +4,8 @@ run:
 
 runsrv:
 	GOOGLE_APPLICATION_CREDENTIALS=/mnt/c/Users/lbfde/Downloads/tag-mng-b8e1b87744fc.json \
-	BASIC_AUTH_NAME=user \
-	BASIC_AUTH_PASSWORD=pass \
+	BASIC_AUTH_NAMES=user1,user2 \
+	BASIC_AUTH_PASSWORDS=pass1,pass2 \
 	go run cmd/extxt/main.go server
 
 # release:

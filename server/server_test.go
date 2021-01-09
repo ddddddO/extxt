@@ -14,9 +14,15 @@ func TestBasicAuthenticated(t *testing.T) {
 		want     bool
 	}{
 		{
-			name:     "Success",
+			name:     "Success1",
 			userName: "aaa",
 			password: "pass",
+			want:     true,
+		},
+		{
+			name:     "Success2",
+			userName: "xxx",
+			password: "xxxpass",
 			want:     true,
 		},
 		{
@@ -29,6 +35,12 @@ func TestBasicAuthenticated(t *testing.T) {
 			name:     "invalid password",
 			userName: "aaa",
 			password: "pppppp",
+			want:     false,
+		},
+		{
+			name:     "invalid another user's password",
+			userName: "aaa",
+			password: "xxxpass",
 			want:     false,
 		},
 		{

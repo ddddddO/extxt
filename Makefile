@@ -11,7 +11,7 @@ runsrv:
 # 自動化しないこと
 test:
 	GOOGLE_APPLICATION_CREDENTIALS=/mnt/c/Users/lbfde/Downloads/tag-mng-b8e1b87744fc.json \
-	BASIC_AUTH_NAMES="aaa" BASIC_AUTH_PASSWORDS="pass" \
+	BASIC_AUTH_NAMES="aaa,xxx" BASIC_AUTH_PASSWORDS="pass,xxxpass" \
 	go test -coverprofile=./testdata/output/cover.out ./... && \
 	go tool cover -html=./testdata/output/cover.out -o ./testdata/output/cover.html
 

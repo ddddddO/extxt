@@ -100,8 +100,8 @@ func basicAuthenticated(r *http.Request) bool {
 		return false
 	}
 
-	for i, validName := range validNames {
-		if username != validName {
+	for i := range validNames {
+		if username != validNames[i] {
 			continue
 		}
 		if password == validPasswords[i] {
